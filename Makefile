@@ -31,8 +31,8 @@ makeobjdirs:
 cleanbins:
 	@rm -f "$(BIN)/*"
 
-runtest: all bin/vmtest
-	bin/vmtest
+runtest: all $(BIN)/vmtest
+	"$(BIN)/vmtest"
 
 # bins
 
@@ -42,16 +42,16 @@ all: makeobjdirs cleanbins \
 	$(CC) $(OSFLAG) -s \
         "$(OBJ)/ui_sdl.o" "$(OBJ)/vm_slow.o" \
         "$(OBJ)/clipboard.o" "$(OBJ)/compiler.o" \
-        -o $(BIN)/$(EXE) $(FLAGS) $(LIBS)
+        -o "$(BIN)/$(EXE)" $(FLAGS) $(LIBS)
 
 $(BIN)/vmtest: makeobjdirs cleanbins \
   $(OBJ)/vm_test.o $(OBJ)/vm_slow.o
-	$(CC) $(OSFLAG) -s "$(OBJ)/vm_test.o" "$(OBJ)/vm_slow.o" \
+	$(CC) $(OSFLAG) -o "$(BIN)/vmtest" -s "$(OBJ)/vm_test.o" "$(OBJ)/vm_slow.o" \
         -o $@ $(FLAGS) $(LIBS)
 
 $(BIN)/ibniz2c: makeobjdirs cleanbins \
   $(OBJ)/ibniz2c.o $(OBJ)/compiler.o $(OBJ)/gen_c.o
-	$(CC) -DIBNIZ2C $(OSFLAG) -s \
+	$(CC) -DIBNIZ2C $(OSFLAG) -o "$(BIN)/ibniz2c" -s \
         "$(OBJ)/ibniz2c.o" "$(OBJ)/compiler.o" "$(OBJ)/gen_c.o" \
         $@ $(FLAGS) $(LIBS)
 
