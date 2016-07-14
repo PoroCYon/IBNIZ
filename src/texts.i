@@ -4,10 +4,10 @@ char*usagetext=
   "  -h(elp)       Dump this text\n"
   "  -v(ersion)    Dump version info\n"
   "  -c(ode) CODE  Execute code\n"
-  "  -n(oautorun)  Do not autorun loaded code or autohide OSD\n";
+  "  -n(oautorun)  Do not autorun loaded code or autohide OSD\n"
   "  -e(ventlog)   Dump user events to stdout\n"
   "  -p(layback)   Play events back from stdin\n"
-  "  -M(edia)      Dump media data (YUV video to stdout)\n"
+  "  -M(edia)      Dump media data (YUV video to stdout)\n";
 
 char*versiontext=
   "IBNIZ version 1.1C00-NORELEASE";
