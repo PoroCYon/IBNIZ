@@ -91,11 +91,5 @@ $(OBJ)/vm_test.o: $(SRC)/vm_test.c
 #EXE=ibniz.exe
 #FLAGS=-L./SDL-1.2.14/lib -I./SDL-1.2.14/include -static -lmingw32 SDL-1.2.14/lib/libSDL.a SDL-1.2.14/lib/libSDLmain.a -mwindows -lwinmm
 
-package: clean
-	cd .. && cp -R "$(SRC)" ibniz-1.18 && tar czf ibniz-1.18.tar.gz ibniz-1.18
-
-winexe: clean
-	cp * ../winbuild && cd ../winbuild && make -f Makefile.win
-
-.PHONY clean all debug release package winexe
+.PHONY: clean all debug release package winexe
 
