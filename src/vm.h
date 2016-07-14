@@ -1,5 +1,9 @@
 #ifndef VM_H
 
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+
 #define MEMSIZE 0x100000
 #define MAXCODESIZE 4096
 #define MAXDATASIZE 4096
@@ -8,7 +12,8 @@ GLOBAL struct
 {
   /* main register set */
 
-    char  *ip;
+    char  *ip;          // !
+
    int32_t*stack;
   uint32_t sp;
   uint32_t stackmask;
@@ -22,7 +27,7 @@ GLOBAL struct
    int32_t*costack;
   uint32_t cosp;
   uint32_t costackmask;
-  
+
   uint32_t*corstack;
   uint32_t corsp;
   uint32_t corstackmask;
@@ -58,12 +63,22 @@ GLOBAL struct
   int      codelgt;
   int      datalgt;
   int      dataptr;
-  uint32_t parsed_data[MAXDATASIZE];
+  uint32_t* parsed_data;
+
+  uint32_t parsed_data_normal[MAXDATASIZE];
+  uint32_t parsed_data_frozen[MAXDATASIZE];
 
   /* compiler-related (also directly executed by vm_slow) */
 
-  char parsed_code[MAXCODESIZE];
-  uint32_t parsed_hints[MAXCODESIZE];
+  bool is_frozen;
+
+  char* parsed_code;
+  uint32_t* parsed_hints;
+
+  char parsed_code_normal[MAXCODESIZE];
+  uint32_t parsed_hints_normal[MAXCODESIZE];
+  char parsed_code_frozen[MAXCODESIZE];
+  uint32_t parsed_hints_frozen[MAXCODESIZE];
 } vm;
 
 #endif

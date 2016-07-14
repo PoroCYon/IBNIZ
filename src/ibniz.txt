@@ -391,6 +391,9 @@ EDITOR COMMANDS
 
         f2 resets the VM state (including timer and memory).
 
+        f3 'freezes' the currently running code, so edits can be made without
+        having the chance of having the audio stream interrupted.
+
         Changes to the source code automatically recompile it but do not
         restart it. This makes it convenient to do runtime changes to
         numeric parameters etc. This functionality may change in the future.

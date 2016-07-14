@@ -43,6 +43,10 @@ void vm_compile(char*src)
 
 void vm_init()
 {
+  vm.parsed_code  = vm.parsed_code_normal ;
+  vm.parsed_data  = vm.parsed_data_normal ;
+  vm.parsed_hints = vm.parsed_hints_normal;
+
   /* video context */
 
   vm.stack=vm.mem+0xE0000;

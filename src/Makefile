@@ -2,6 +2,13 @@
 CC=gcc
 EXE=ibniz
 FLAGS=`sdl-config --libs --cflags` -DX11 -lX11
+
+debug: ibniz
+debug: FLAGS += -g3 -ggdb3 -DDEBUG
+
+release: ibniz
+release: FLAGS += -DRELEASE
+
 all: ibniz
 
 # For win32 builds using mingw32 (you'll probably need to modify these)
@@ -11,7 +18,7 @@ all: ibniz
 #all: ibniz.exe
 
 clean:
-	rm -f *.o *~ ibniz vmtest ibniz.exe whole.c
+	rm -f *.o font.i *~ ibniz vmtest ibniz.exe whole.c ibniz2c ibniz2c-gen
 
 package: clean
 	cd .. && cp -R src ibniz-1.18 && tar czf ibniz-1.18.tar.gz ibniz-1.18
@@ -26,19 +33,20 @@ winexe: clean
 #	cat ui_sdl.c vm_slow.c clipboard.c > whole.c
 
 $(EXE): ui_sdl.o vm_slow.o clipboard.o compiler.o
-	$(CC) -Os -s ui_sdl.o vm_slow.o clipboard.o compiler.o -o $(EXE) $(FLAGS) -lm
-
-ui_sdl.o: ui_sdl.c ibniz.h font.i vm.h texts.i vm.h
-	$(CC) -c -Os ui_sdl.c -o ui_sdl.o $(FLAGS)
+	$(CC) -s ui_sdl.o vm_slow.o clipboard.o compiler.o -o $(EXE) $(FLAGS) -lm
+	echo $(FLAGS)
 
 clipboard.o: clipboard.c ibniz.h
-	$(CC) -c -Os clipboard.c -o clipboard.o $(FLAGS)
+	$(CC) -Os -c clipboard.c -o clipboard.o $(FLAGS)
 
 compiler.o: compiler.c ibniz.h vm.h
-	$(CC) -c -Os compiler.c -o compiler.o $(FLAGS)
+	$(CC) -Os -c compiler.c -o compiler.o $(FLAGS)
 
 vm_slow.o: vm_slow.c ibniz.h vm.h
-	$(CC) -c -O3 vm_slow.c -o vm_slow.o
+	$(CC) -O3 -c vm_slow.c -o vm_slow.o
+
+ui_sdl.o: ui_sdl.c ibniz.h font.i vm.h texts.i vm.h
+	$(CC) -Os -c ui_sdl.c -o ui_sdl.o $(FLAGS)
 
 font.i: font.pl
 	perl font.pl > font.i
@@ -51,3 +59,6 @@ vmtest: vm_test.c vm_slow.c
 
 ibniz2c: ibniz2c.c compiler.c gen_c.c
 	gcc -DIBNIZ2C -Os compiler.c ibniz2c.c -o ibniz2c -lm
+
+#ibniz2c-gen: $(EXE)
+#	gcc -Os -s ui_sdl.o clipboard.o compiler.o -o "$(EXE)-gen" $(FLAGS) -lm

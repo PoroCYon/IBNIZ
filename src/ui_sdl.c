@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <string.h>
 #ifdef __APPLE__
 #include <SDL.h>
 #else
@@ -153,7 +155,7 @@ void drawStatusPanel()
   char buf[24];
   int sgn,spc;
   uint32_t a;
-  sprintf(buf,"T=%04X",gettimevalue()&0xFFFF);
+  sprintf(buf,"T=%04X FRZ=%i",gettimevalue()&0xFFFF,(bool)vm.is_frozen);
   drawString(buf,0,28);
   if(ui.runstat)
   {
@@ -295,7 +297,7 @@ void getkeystates()
 
 /*** audio-related ***/
 
-void pauseaudio(s)
+static void pauseaudio(s)
 {
   if(!ui.opt_nonrealtime)
     SDL_PauseAudio(s);
@@ -847,7 +849,7 @@ void interactivemode(char*codetoload)
         pollplaybackevent(&e);
       if(e.type==SDL_NOEVENT)
       {
-        if(codechanged) 
+        if(codechanged)
         {
           vm_compile(ed_getprogbuf());
           if(ui.audio_off)
@@ -890,7 +892,6 @@ void interactivemode(char*codetoload)
 
       getkeystates();
 
-      
       if(sym==SDLK_ESCAPE) break;
       else
       if(sym==SDLK_TAB)
@@ -988,6 +989,33 @@ void interactivemode(char*codetoload)
           ed_switchbuffers();
         }
         else
+        if(sym==SDLK_F3)
+        {
+          size_t ip_rel = vm.ip - vm.parsed_code;
+          char* oip = vm.ip;
+
+          if((vm.is_frozen=!vm.is_frozen))
+          {
+            vm.parsed_code  = vm.parsed_code_frozen ;
+            vm.parsed_data  = vm.parsed_data_frozen ;
+            vm.parsed_hints = vm.parsed_hints_frozen;
+
+            memcpy(vm.parsed_code_frozen , vm.parsed_code_normal ,
+                    MAXCODESIZE);
+            memcpy(vm.parsed_data_frozen , vm.parsed_data_normal ,
+                    MAXDATASIZE);
+            memcpy(vm.parsed_hints_frozen, vm.parsed_hints_normal,
+                    MAXCODESIZE*sizeof(uint32_t));
+          }
+          else
+          {
+            vm.parsed_code  = vm.parsed_code_normal ;
+            vm.parsed_data  = vm.parsed_data_normal ;
+            vm.parsed_hints = vm.parsed_hints_normal;
+          }
+          vm.ip = vm.parsed_code + ip_rel;
+        }
+        else
         if(sym=='s' && (mod&KMOD_CTRL))
         {
           ed_save();
@@ -1059,6 +1087,7 @@ void interactivemode(char*codetoload)
     }
     else if(e.type==SDL_VIDEORESIZE)
     {
+        if(vm.is_frozen)printf("resz\n");
       sdl.winsz=e.resize.w<e.resize.h?e.resize.w:e.resize.h;
       sdl.xmargin=(e.resize.w-sdl.winsz)/2;
       sdl.ymargin=(e.resize.h-sdl.winsz)/2;

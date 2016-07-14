@@ -15,8 +15,8 @@
 
 void compiler_parse(char*src)
 {
-  char*d=vm.parsed_code;
-  uint32_t*hd=vm.parsed_hints;
+  char*d=vm.parsed_code_normal;
+  uint32_t*hd=vm.parsed_hints_normal;
   uint32_t num;
   char*s,nummode=0,shift=0;
   int i,j;
@@ -88,7 +88,7 @@ void compiler_parse(char*src)
   if(s[-1]=='$')
   {
     int digitsz=4;
-    vm.parsed_data[0]=0;
+    vm.parsed_data_normal[0]=0;
     for(;;)
     {
       int a=*s++;
@@ -123,13 +123,13 @@ void compiler_parse(char*src)
           {int s=(32-digitsz-(vm.datalgt&31));
            if(s>=0)
            {
-             vm.parsed_data[vm.datalgt>>5]|=a<<s;
-             vm.parsed_data[(vm.datalgt>>5)+1]=0;
+             vm.parsed_data_normal[vm.datalgt>>5]|=a<<s;
+             vm.parsed_data_normal[(vm.datalgt>>5)+1]=0;
            }
            else
            {
-             vm.parsed_data[vm.datalgt>>5]|=a>>(0-s);
-             vm.parsed_data[(vm.datalgt>>5)+1]=a<<(32+s);
+             vm.parsed_data_normal[vm.datalgt>>5]|=a>>(0-s);
+             vm.parsed_data_normal[(vm.datalgt>>5)+1]=a<<(32+s);
            }
            vm.datalgt+=digitsz;
           }
@@ -143,26 +143,26 @@ void compiler_parse(char*src)
       int i=pad;
       while(i<32)
       {
-        vm.parsed_data[vm.datalgt>>5]|=vm.parsed_data[0]>>i;
+        vm.parsed_data_normal[vm.datalgt>>5]|=vm.parsed_data_normal[0]>>i;
         i*=2;
       }
     }
-    if(!pad) vm.parsed_data[(vm.datalgt>>5)+1]=vm.parsed_data[0];
+    if(!pad) vm.parsed_data_normal[(vm.datalgt>>5)+1]=vm.parsed_data_normal[0];
     else
     {
-      vm.parsed_data[(vm.datalgt>>5)+1]=
-        (vm.parsed_data[0]<<(32-pad)) |
-        (vm.parsed_data[1]>>pad);
+      vm.parsed_data_normal[(vm.datalgt>>5)+1]=
+        (vm.parsed_data_normal[0]<<(32-pad)) |
+        (vm.parsed_data_normal[1]>>pad);
     }
     }
   }
 
   /* precalculate skip points */
-  vm.codelgt=d-vm.parsed_code;
+  vm.codelgt=d-vm.parsed_code_normal;
   for(i=0;;i++)
   {
     int j=i+1,seek0=0,seek1=0,seek2=0;
-    char a=vm.parsed_code[i];
+    char a=vm.parsed_code_normal[i];
     if(a=='\0') { seek0='M'; j=0; }
     if(a=='M') seek0='M';
     else if(a=='?') { seek0=';'; seek1=':'; }
@@ -172,11 +172,11 @@ void compiler_parse(char*src)
     {
       for(;;j++)
       {
-        int a=vm.parsed_code[j];
+        int a=vm.parsed_code_normal[j];
         if(a=='\0' || a==seek0 || a==seek1)
         {
-          if(i==j || a==0) vm.parsed_hints[i]=0;
-              else vm.parsed_hints[i]=j+1;
+          if(i==j || a==0) vm.parsed_hints_normal[i]=0;
+              else vm.parsed_hints_normal[i]=j+1;
           break;
         }
       }
@@ -819,7 +819,7 @@ int compiler_compile()
   gen_tyxloop_init();
   for(i=0;i<vm.codelgt;i++)
   {
-    char a=vm.parsed_code[i];
+    char a=vm.parsed_code_normal[i];
     gen.srcidx=i;
 #ifdef COMPILERDEBUG    
     printf("// op %c, stack now: ",a);
@@ -833,7 +833,7 @@ int compiler_compile()
     switch(a)
     {
       case(OP_LOADIMM):
-        gen_loadimm(vm.parsed_hints[i]);
+        gen_loadimm(vm.parsed_hints_normal[i]);
         break;
       
       case('d'):
@@ -902,10 +902,10 @@ int compiler_compile()
         break;
       
       case('?'):
-        gen_if(vm.parsed_hints[i]);
+        gen_if(vm.parsed_hints_normal[i]);
         break;
       case(':'):
-        gen_else(vm.parsed_hints[i]);
+        gen_else(vm.parsed_hints_normal[i]);
         break;
       case(';'):
         gen_endif();
