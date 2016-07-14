@@ -43,9 +43,9 @@ void vm_compile(char*src)
 
 void vm_init()
 {
-  vm.parsed_code  = vm.parsed_code_normal ;
-  vm.parsed_data  = vm.parsed_data_normal ;
-  vm.parsed_hints = vm.parsed_hints_normal;
+  vm.parsed_code  = vm.is_frozen?vm.parsed_code_frozen :vm.parsed_code_normal ;
+  vm.parsed_data  = vm.is_frozen?vm.parsed_data_frozen :vm.parsed_data_normal ;
+  vm.parsed_hints = vm.is_frozen?vm.parsed_hints_frozen:vm.parsed_hints_normal;
 
   /* video context */
 

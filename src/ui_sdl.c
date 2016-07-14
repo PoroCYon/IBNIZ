@@ -1087,7 +1087,6 @@ void interactivemode(char*codetoload)
     }
     else if(e.type==SDL_VIDEORESIZE)
     {
-        if(vm.is_frozen)printf("resz\n");
       sdl.winsz=e.resize.w<e.resize.h?e.resize.w:e.resize.h;
       sdl.xmargin=(e.resize.w-sdl.winsz)/2;
       sdl.ymargin=(e.resize.h-sdl.winsz)/2;
