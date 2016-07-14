@@ -5,9 +5,9 @@ char*usagetext=
   "  -v(ersion)    Dump version info\n"
   "  -c(ode) CODE  Execute code\n"
   "  -n(oautorun)  Do not autorun loaded code or autohide OSD\n";
-//  "  -e(ventlog)   Dump user events to stdout\n"
-//  "  -p(layback)   Play events back from stdin\n"
-//  "  -M(edia)      Dump media data (YUV video to stdout)\n"
+  "  -e(ventlog)   Dump user events to stdout\n"
+  "  -p(layback)   Play events back from stdin\n"
+  "  -M(edia)      Dump media data (YUV video to stdout)\n"
 
 char*versiontext=
   "IBNIZ version 1.1C00-NORELEASE";
@@ -17,7 +17,7 @@ char*welcometext=
   "\n"
   "\n"
   "\n"
-  "\\ IBNIZ 1.1C00-NORELEASE\n"
+  "\\ IBNIZ 1.1D00-NORELEASE\n" // added some features -> new version, I guess
   "\\\n"
   "\\ Press f12 for help.\n";
 
@@ -26,18 +26,19 @@ char*helpscreen=
 "IBNIZ quick reference (F12:quit)"
 "Use cursor keys to move around\n"
 "\n"
-"======= Keyboard commands ======"
+"======= Keyboard commands ======\n"
 "\n"
-"f1  start/pause         f12 help"
-"f2  reset/restart       esc quit"
+"f1  start/pause         f12 help\n"
+"f2  reset/restart       esc quit\n"
+"f3  'freeze' compiler\n"
 "tab hide/show editor ctrl+s save"
 "\n"
 "shift+cursor .... select area\n"
-"ctrl+left/right . jump by words "
-"ctrl+up/down .... inc/dec number"
-"ctrl+x/c/v ...... cut/copy/paste"
+"ctrl+left/right . jump by words\n"
+"ctrl+up/down .... inc/dec number\n"
+"ctrl+x/c/v ...... cut/copy/paste\n"
 "\n"
-"======== IBNIZ language ========"
+"======== IBNIZ language ========\n"
 "\n"
 "One character per operation.\n"
 "Number format 16.16 fixedpoint.\n"
