@@ -17,7 +17,7 @@ char*welcometext=
   "\n"
   "\n"
   "\n"
-  "\\ IBNIZ 1.1D00-NORELEASE\n" // added some features -> new version, I guess
+  "\\ IBNIZ 1.1D00-GIT\n" \\ added some features -> new version, I guess
   "\\\n"
   "\\ Press f12 for help.\n";
 
