@@ -851,7 +851,7 @@ void interactivemode(char*codetoload)
         pollplaybackevent(&e);
       if(e.type==SDL_NOEVENT)
       {
-        if(codechanged)
+        if(codechanged&&!vm.is_frozen)
         {
           vm_compile(ed_getprogbuf());
           if(ui.audio_off)
@@ -918,7 +918,7 @@ void interactivemode(char*codetoload)
       if(sym==SDLK_F2)
       {
         ui.timercorr=ui.paused_since=getticks();
-        if(codechanged)
+        if(codechanged&&!vm.is_frozen)
         {
           vm_compile(ed_getprogbuf());
           codechanged=0;
@@ -993,7 +993,20 @@ void interactivemode(char*codetoload)
         else
         if(sym==SDLK_F3)
         {
-          size_t ip_rel = vm.ip - vm.parsed_code;
+          vm.is_frozen=!vm.is_frozen;
+
+          if(codechanged)
+          {
+            vm_compile(ed_getprogbuf());
+            if(ui.audio_off)
+            {
+              ui.audio_off=0;
+              pauseaudio(0);
+            }
+            codechanged=0;
+          }
+
+          /*size_t ip_rel = vm.ip - vm.parsed_code;
           char* oip = vm.ip;
 
           if((vm.is_frozen=!vm.is_frozen))
@@ -1015,7 +1028,7 @@ void interactivemode(char*codetoload)
             vm.parsed_data  = vm.parsed_data_normal ;
             vm.parsed_hints = vm.parsed_hints_normal;
           }
-          vm.ip = vm.parsed_code + ip_rel;
+          vm.ip = vm.parsed_code + ip_rel;*/
         }
         else
         if(sym==SDLK_F11)
