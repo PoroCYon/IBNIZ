@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #ifdef __APPLE__
 #include <SDL.h>
 #else
@@ -37,6 +38,7 @@ struct
   char opt_nonrealtime;
   char opt_playback;
   char opt_dumpmedia;
+  bool is_fullscreen;
 } ui;
 
 struct
@@ -1014,6 +1016,27 @@ void interactivemode(char*codetoload)
             vm.parsed_hints = vm.parsed_hints_normal;
           }
           vm.ip = vm.parsed_code + ip_rel;
+        }
+        else
+        if(sym==SDLK_F11)
+        {
+          ui.is_fullscreen=!ui.is_fullscreen;
+
+          const SDL_VideoInfo* inf=SDL_GetVideoInfo();
+
+          sdl.winsz=inf->current_w<inf->current_h
+              ?inf->current_w:inf->current_h;
+          sdl.xmargin=(inf->current_w-sdl.winsz);
+          sdl.ymargin=(inf->current_h-sdl.winsz);
+
+          SDL_FreeSurface(sdl.s);
+          sdl.s=SDL_SetVideoMode(inf->current_w,inf->current_h,0,
+                  ui.is_fullscreen?SDL_FULLSCREEN:SDL_RESIZABLE);
+          SDL_FreeYUVOverlay(sdl.o);
+          sdl.o=SDL_CreateYUVOverlay(256,256,SDL_YUY2_OVERLAY,sdl.s);
+          SDL_WM_SetCaption("IBNIZ","IBNIZ");
+
+          showyuv();
         }
         else
         if(sym=='s' && (mod&KMOD_CTRL))
