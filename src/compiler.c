@@ -821,7 +821,7 @@ int compiler_compile()
   {
     char a=vm.parsed_code/*_normal*/[i];
     gen.srcidx=i;
-#ifdef COMPILERDEBUG    
+#ifdef COMPILERDEBUG
     printf("// op %c, stack now: ",a);
     for(j=0;j<=gen.gsp;j++)
       if(gen.gs[j].type==GSV_REG) printf("%c ",'A'+gen.gs[j].val);
@@ -835,7 +835,7 @@ int compiler_compile()
       case(OP_LOADIMM):
         gen_loadimm(vm.parsed_hints/*_normal*/[i]);
         break;
-      
+
       case('d'):
         gen_dup();
         break;
@@ -848,7 +848,7 @@ int compiler_compile()
       case('v'):
         gen_trirot();
         break;
-        
+
       case('+'):
         gen_add();
         break;
@@ -900,7 +900,7 @@ int compiler_compile()
       case('a'):
         gen_atan2();
         break;
-      
+
       case('?'):
         gen_if(vm.parsed_hints/*_normal*/[i]);
         break;
@@ -910,7 +910,7 @@ int compiler_compile()
       case(';'):
         gen_endif();
         break;
-      
+
       case('!'):
         gen_store();
         break;

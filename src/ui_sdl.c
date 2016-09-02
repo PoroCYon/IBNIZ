@@ -76,7 +76,8 @@ uint8_t font[]=
 #  define PLAYBACKGAP 16
 #endif
 
-#define DEBUG
+//#define DEBUG
+#define DEBUG_PRNT(...)
 
 /*** rendering of videostack and osd ***/
 
@@ -299,7 +300,7 @@ void getkeystates()
 
 /*** audio-related ***/
 
-static void pauseaudio(s)
+static void pauseaudio(int s)
 {
   if(!ui.opt_nonrealtime)
     SDL_PauseAudio(s);
@@ -339,7 +340,7 @@ void scheduler_check()
 
   if((vm.prevsp[1]>0) && playback_at>auwriter_at)
   {
-    DEBUG(stderr,"%x > %x! (sp %x & %x) jumping forward\n",playback_at,auwriter_at,
+    DEBUG_PRNT(stderr,"%x > %x! (sp %x & %x) jumping forward\n",playback_at,auwriter_at,
       vm.sp,vm.cosp);
     vm.audiotime=((ui.auplaytime>>16)&~63)+64;
     vm.preferredmediacontext=1;
@@ -354,7 +355,7 @@ void checkmediaformats()
 {
   if(vm.wcount[1]!=0 && vm.spchange[1]<=0)
   {
-    DEBUG(stderr,"audio stack underrun; shut it off!\n");
+    DEBUG_PRNT(stderr,"audio stack underrun; shut it off!\n");
     ui.audio_off=1;
     vm.spchange[1]=vm.wcount[1]=0;
     pauseaudio(1);
@@ -366,18 +367,18 @@ void checkmediaformats()
   if((vm.videomode==0) && (vm.spchange[0]-vm.wcount[0]*2==1))
   {
     vm.videomode=1;
-    DEBUG(stderr,"switched to t-video (sp changed by %d with %d w)\n",
+    DEBUG_PRNT(stderr,"switched to t-video (sp changed by %d with %d w)\n",
       vm.spchange[0],vm.wcount);
   }
   else if((vm.videomode==1) && (vm.spchange[0]+vm.wcount[0]*2==1))
   {
     vm.videomode=0;
-    DEBUG(stderr,"switched to tyx-video");
+    DEBUG_PRNT(stderr,"switched to tyx-video");
   }
 
   if((vm.videomode==1) && (vm.spchange[1]+vm.wcount[1]*2==1))
   {
-    DEBUG(stderr,"A<=>V detected!\n");
+    DEBUG_PRNT(stderr,"A<=>V detected!\n");
     switchmediacontext();
     vm.videomode=0;
     /* prevent loop */
@@ -687,7 +688,7 @@ void ed_save()
     fn=strdup("untitled.ib");
   }
   f=fopen(fn,"w");
-  DEBUG(stderr,"filename: %s\n",fn);
+  DEBUG_PRNT(stderr,"filename: %s\n",fn);
   if(!f) inserttosrc("\\ ERROR: couldn't save file!\n");
     else
   {
@@ -808,7 +809,7 @@ void interactivemode(char*codetoload)
       updatescreen();
       vm.specialcontextstep=3;
       prevtimevalue=t;
-      DEBUG(stderr,"t:%x audio:%x playback:%x video:%x\n",
+      DEBUG_PRNT(stderr,"t:%x audio:%x playback:%x video:%x\n",
         t,(vm.audiotime)+(((vm.mediacontext==1)?vm.sp:vm.cosp)>>10)
         ,(ui.auplaytime>>16)+(ui.auplayptr>>26),vm.videotime);
     }
@@ -918,7 +919,7 @@ void interactivemode(char*codetoload)
       if(sym==SDLK_F2)
       {
         ui.timercorr=ui.paused_since=getticks();
-        if(codechanged&&!vm.is_frozen)
+        if(/*codechanged&&*/!vm.is_frozen)
         {
           vm_compile(ed_getprogbuf());
           codechanged=0;
@@ -1226,7 +1227,7 @@ int main(int argc,char**argv)
    as.samples=512;
    as.callback=updateaudio;
    SDL_OpenAudio(&as,NULL);
-   DEBUG(stderr,"buffer size: %d\n",as.samples);
+   DEBUG_PRNT(stderr,"buffer size: %d\n",as.samples);
   }
   
   vm_compile(codetoload);

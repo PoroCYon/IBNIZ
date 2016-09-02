@@ -58,7 +58,7 @@ The last opcode, 'pop' ('p') corresponds to Forth's DROP and moves the stack
 pointer so that the value on top of the stack gets 'popped off'. So, after
 the execution of the three instructions '^xp', the values T Y X have been
 transformed into Y XOR X.
-                        
+
 Whatever data remains in the stack is interpreted as pixel colors in the YUV
 colorspace (bit format VVUU.YYYY; thus, the integer part roughly corresponds
 to hue and the fraction part to intensity). As the range of X and Y is
@@ -509,6 +509,17 @@ v7rs6ldv*vv*7&@xr.8&$b
 1.1800
 - Clipboard bugs fixed, window icon added
 - Machine status panel implemented
+
+1.1C00
+- Started working on an ibniz-to-c and ibniz-to-x86 compiler.
+
+1.1D00
+- PoroCYon took over
+- Implemented a 'freeze' button: do not compile automatically in freeze mode (F3).
+- Added fullscreen mode (F11).
+- Cleaned up the project files.
+- Other minor fixes and tweaks etc.
+- Added AUR package.
 
 === FUTURE ===
 
